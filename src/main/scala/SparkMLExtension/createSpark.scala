@@ -6,6 +6,7 @@ package SparkMLExtension
 import org.apache.spark.{SparkConf, SparkContext}
 
 object createSpark {
+
   def main(args: Array[String]) = {
     val conf = new SparkConf()
       .setAppName("Simple App")

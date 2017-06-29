@@ -25,58 +25,58 @@ object SparkTweets {
 //    //CNTRL + SHIFT + P to see the type
 //
     val df = tweets.map(s => getTweetsAndLang(s)).filter(_._1 != "unknown").toDF("tweet","lang")
-//
+////
     val tokenizer = new RegexTokenizer()
       .setInputCol("tweet")
       .setOutputCol("words")
       .setPattern("\\s+|[,.\\\"]")
-
+//
     val hashingTF = new HashingTF()
       .setInputCol("words")
       .setOutputCol("rawFeatures")
       .setNumFeatures(200)
-//
-    //idf = IDF(inputCol="rawFeatures", outputCol="features")
+////
+//    //idf = IDF(inputCol="rawFeatures", outputCol="features")
     val idf = new IDF().setInputCol("rawFeatures").setOutputCol("features")
-
-    //forestizer = RandomForestClassifier(labelCol="lang", featuresCol="features", numTrees=10)
-    //alt + enter
+//
+//    //forestizer = RandomForestClassifier(labelCol="lang", featuresCol="features", numTrees=10)
+//    //alt + enter
     val rf = new RandomForestClassifier()
       .setLabelCol("lang")
       .setFeaturesCol("features")
       .setNumTrees(10)
-//
+////
 //    pipeline = Pipeline(stages=[\
 //      tokenizer,
 //      hashingTF,
 //      idf,
 //      forestizer])
-
+//
     val pipeline = new Pipeline().setStages(Array(tokenizer, hashingTF, idf, rf))
-
-//    tweets_train, tweets_test = df.randomSplit([0.7, 0.3], seed=123)
-
+//
+////    tweets_train, tweets_test = df.randomSplit([0.7, 0.3], seed=123)
+//
     val Array(tweets_train, tweets_test) = df.randomSplit(Array(.7,.3))
-
-//    model = pipeline.fit(tweets_train)
+//
+////    model = pipeline.fit(tweets_train)
     val model = pipeline.fit(tweets_train)
-
-//    test_model = model.transform(tweets_test)
+//
+////    test_model = model.transform(tweets_test)
     val test_model = model.transform(tweets_test)
-
-
-    evaluator = BinaryClassificationEvaluator(rawPredictionCol='probability', labelCol='lang')
+//
+//
+//    //evaluator = BinaryClassificationEvaluator(rawPredictionCol='probability', labelCol='lang')
     val evaluator = new BinaryClassificationEvaluator()
       .setLabelCol("lang")
       .setRawPredictionCol("probability")
-
-//    print('AUC for Random Forest:', evaluator.evaluate(test_model{evaluator.metricName: 'areaUnderROC'}))
-
-    println("AUC for Random Forest:", evaluator.setMetricName("areaUnderROC").evaluate(test_model))
-
 //
-//    sc.stop()
-
+////    print('AUC for Random Forest:', evaluator.evaluate(test_model{evaluator.metricName: 'areaUnderROC'}))
+//
+    println("AUC for Random Forest:", evaluator.setMetricName("areaUnderROC").evaluate(test_model))
+//
+////
+////    sc.stop()
+//
   }
 
   def findVal(str: String, ToFind: String): String = {
